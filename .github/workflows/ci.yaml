@@ -32,6 +32,7 @@ jobs:
       run: |
         poetry run coverage run -m unittest test
         poetry run coverage report
+        poetry run coverage html
       continue-on-error: false
 
     - name: Upload coverage report
