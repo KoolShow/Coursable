@@ -3,25 +3,27 @@ from pathlib import Path
 
 from .utils import absolute_path
 from . import CourseTable
+from . import __version__
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="BJUT course table converter."
+        prog = __package__,
+        description = "BJUT course table converter."
     )
 
     parser.add_argument(
         '-v', '--version',
-        action='version',
-        version='%(prog)s 0.1',
+        action = 'version',
+        version = f'%(prog)s {__version__}',
         help="Show the version of the tool."
     )
 
     parser.add_argument(
         '-i', '--input',
-        metavar='INPUT_FILE',
-        type=str,
-        help="The path to the input file. If not provided, the input will be the default example."
+        metavar = 'INPUT_FILE',
+        type = str,
+        help = "The path to the input file. If not provided, the input will be the default example."
     )
 
     args = parser.parse_args()
@@ -33,8 +35,7 @@ def main():
     except FileNotFoundError as e:
         parser.error(str(e))
 
-    for course in table.course_list:
-        print(course)
+    print(table)
 
 if __name__ == "__main__":
     main()
