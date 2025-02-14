@@ -1,0 +1,57 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.13'
+
+    - name: Install Poetry
+      run: curl -sSL https://install.python-poetry.org | python3 -
+
+    - name: Change working directory
+      run: cd coursable
+
+    - name: Install dependencies
+      run: poetry install --all-extras --with dev
+
+    - name: Activate venv
+      run: eval $(poetry env activate)
+
+    - name: Run mypy
+      run: poetry run mypy .
+      continue-on-error: false
+
+    - name: Run unit tests with coverage
+      run: |
+        poetry run coverage run -m unittest test
+        poetry run coverage report
+      continue-on-error: false
+
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: htmlcov
+
+    - name: Run pylint
+      run: poetry run pylint courseable
+      continue-on-error: true
+
+    - name: Build development package
+      run: poetry build
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: dist/
