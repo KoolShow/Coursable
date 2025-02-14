@@ -24,14 +24,14 @@ class Mapper:
         try:
             return self.map[key]
         except KeyError:
-            logging.warning(f"'{key}' not found in mapping file")
+            logging.warning("'%s' not found in mapping file", key)
             return None
 
     def to_external(self, value):
         for key, val in self.map.items():
             if val == value:
                 return key
-        logging.warning(f"'{value}' not found in mapping file")
+        logging.warning("'%s' not found in mapping file", value)
         return None
 
 mapper = Mapper()

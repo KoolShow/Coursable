@@ -1,9 +1,11 @@
 import logging
 from pathlib import Path
+import traceback
 from typing import Self, TextIO
 
 from .course import Course
 from .mapping import to_external, to_internal
+from .lang import _
 from ._json_parser import parser
 from ._requests import read_url
 
@@ -68,14 +70,16 @@ class CourseTable:
 
             try:
                 course_list.append(Course(**course_args))
-            except Exception as e:
-                logging.error(f"Failed to parse course {course_args}: {e}")
+            except Exception:
+                logging.error("Unexpected error occurred while parsing course %s, %s",
+                              course_args, traceback.format_exc())
 
         self.course_list = course_list
 
 
 
-    def pretty_print(self):
-        # TODO
-
-        pass
+    def __str__(self) -> str:
+        return f"{_('coursetable')}:\n    " \
+               +"\n".join(str(course) for course in self.course_list) \
+                .replace("\n", "\n    ") \
+                .strip(" ")
