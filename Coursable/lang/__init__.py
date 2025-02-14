@@ -1,9 +1,8 @@
 from typing import Callable
-from numpy import isin
 import yaml
-from os import path
+from ..utils import absolute_path
 
-lang_path = __path__[0] # type: ignore
+lang_path = absolute_path("lang")
 
 class I18n:
 
@@ -14,15 +13,15 @@ class I18n:
         self.set_language(language)
 
     def set_language(self, language: str):
-        with open(path.join(lang_path, f"{language}.yml"), 'r', encoding='utf-8') as f:
+        with open(lang_path / f"{language}.yml", 'r', encoding='utf-8') as f:
             result = yaml.load(f, Loader=yaml.SafeLoader)
         if not isinstance(result, dict):
             raise ValueError(f"Invalid i18n file {language}.yml")
         self.i18n_map = result
 
-    def get_local_string(self, key):
+    def localize(self, key):
         return self.i18n_map.get(key, key)
 
 i18n = I18n()
 
-_: Callable[[str], str] = i18n.get_local_string
+_: Callable[[str], str] = i18n.localize

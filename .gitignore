@@ -3,9 +3,6 @@
 *__pycache__/
 venv/
 .env/
-example.json
-example.yml
-flat.json
 .DS_Store
 Thumbs.db
 *.log

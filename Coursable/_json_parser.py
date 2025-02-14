@@ -1,11 +1,13 @@
-from typing import LiteralString, Self, TextIO
+from typing import TextIO
+from types import ModuleType
+
 import logging
 import traceback
-from types import ModuleType
-from typing import Optional
+
 
 _json_modules = ["orjson", "ujson", "json"]
 
+__all__ = ["JSONParser"]
 
 class JSONParser:
 
@@ -40,7 +42,7 @@ class JSONParser:
         raise NotImplementedError
 
 
-parser: Optional[JSONParser] = None
+parser: JSONParser
 
 
 class OrJSON(JSONParser):
@@ -70,21 +72,23 @@ class JSON(JSONParser):
         return self.module.loads(data)
 
 
-def get_json_parser() -> JSONParser:
-    global parser
-    if parser:
-        return parser
+def __getattr__(name: str):
+    if name == "parser":
+        global parser
+        for module_name in _json_modules:
+            try:
+                module: ModuleType = __import__(module_name)
+                parser = JSONParser(module)
+                return parser
 
-    for module_name in _json_modules:
-        try:
-            module: ModuleType = __import__(module_name)
-            parser = JSONParser(module)
-            return parser
+            except ModuleNotFoundError:
+                logging.info(f"{module_name} not found")
 
-        except ModuleNotFoundError:
-            logging.info(f"{module_name} not found")
+            except Exception:
+                logging.error(traceback.format_exc())
 
-        except Exception:
-            logging.error(traceback.format_exc())
+        raise ModuleNotFoundError("Could not found an available JSON parser")
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
-    raise ModuleNotFoundError("Could not found an available JSON parser")
+def __dir__() -> list[str]:
+    return __all__ + ["parser"]
