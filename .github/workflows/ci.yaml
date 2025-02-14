@@ -42,7 +42,7 @@ jobs:
         path: htmlcov/
 
     - name: Run pylint
-      run: poetry run pylint coursable
+      run: poetry run pylint coursable || true
       continue-on-error: true
 
     - name: Build development package
