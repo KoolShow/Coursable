@@ -18,9 +18,6 @@ jobs:
     - name: Install Poetry
       run: curl -sSL https://install.python-poetry.org | python3 -
 
-    - name: Change working directory
-      run: cd coursable
-
     - name: Install dependencies
       run: poetry install --all-extras --with dev
 
@@ -28,7 +25,7 @@ jobs:
       run: eval $(poetry env activate)
 
     - name: Run mypy
-      run: poetry run mypy .
+      run: poetry run mypy coursable
       continue-on-error: false
 
     - name: Run unit tests with coverage
@@ -41,10 +38,10 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: htmlcov
+        path: coursable/htmlcov
 
     - name: Run pylint
-      run: poetry run pylint courseable
+      run: poetry run pylint coursable
       continue-on-error: true
 
     - name: Build development package
@@ -54,4 +51,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: dist/
+        path: coursable/dist/
