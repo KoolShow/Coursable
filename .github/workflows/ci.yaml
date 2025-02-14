@@ -38,7 +38,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: coursable/htmlcov
+        path: htmlcov/
 
     - name: Run pylint
       run: poetry run pylint coursable
@@ -51,4 +51,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
-        path: coursable/dist/
+        path: dist/
