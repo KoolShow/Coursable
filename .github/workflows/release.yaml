@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.13'
+
+      - name: Install Poetry
+        run: curl -sSL https://install.python-poetry.org | python3 -
+
+      - name: Install dependencies
+        run: poetry install --all-extras --with dev
+
+      - name: Build package
+        run: poetry build
+
+      - name: Gather commit messages
+        id: commits
+        run: |
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ || echo "")
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "commits=$(git log --pretty=format:'- %h %s')" >> $GITHUB_OUTPUT
+          else
+            echo "commits=$(git log --pretty=format:'- %h %s' ${PREVIOUS_TAG}..HEAD)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: ${{ github.ref_name }}
+          body: ${{ steps.commits.outputs.commits }}
+          draft: true
+          prerelease: false
+
+      - name: Upload each file in dist/
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: dist/*
+            asset_content_type: application/octet-stream
