@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 import re
 import time
-from typing import Literal
+from typing import TYPE_CHECKING, Literal
 from dataclasses import dataclass
 
+from ._lazy_imports import require
 from .lang import _ # i18n function
-from .constants import time_table, tz
+from .constants import time_table, tz, startdates
 
 
 @dataclass
@@ -13,6 +14,8 @@ class Course:
     name: str
     weekday: Literal[1,2,3,4,5,6,7]
     room_name: str
+    year: int
+    term: int
     weeks: range
     update_date: datetime
     periods: range
@@ -29,6 +32,8 @@ class Course:
                  name: str,
                  weekday: str,
                  room_name: str,
+                 year: str,
+                 term: str,
                  weeks: str,
                  update_date: str,
                  periods: str,
@@ -43,6 +48,8 @@ class Course:
         self.name = name
         self.weekday = self.parse_weekday(weekday)
         self.room_name = room_name
+        self.year = int(year or -1)
+        self.term = int(term or -1)
         self.weeks = self.parse_weeks(weeks)
         self.update_date = self.parse_date(update_date)
         self.periods = self.parse_periods(periods)
@@ -113,11 +120,41 @@ class Course:
         et = timedelta(hours=int(end_time[0]), minutes=int(end_time[1]))
         return st, et
 
+    @property
+    def first_day(self) -> datetime:
+        try:
+            date_str = startdates[(self.year, self.term)]
+        except KeyError as e:
+            raise KeyError(f"Start date not found for year {self.year} term {self.term}") from e
+
+        dt = self.parse_date(date_str)
+
+        return dt + timedelta(days=self.weekday - 1,
+                              weeks=self.weeks.start - 1)
+
     def __str__(self) -> str:
         return f"{self.name}:\n" \
+               f"    {_('year2_term')}: {self.year}-{self.year + 1} - {self.term}\n" \
                f"    {_('weekday')}: {self.weekday}\n" \
-               f"    {_('periods')}: {self.periods.start}-{self.periods.stop-1}({'-'.join(map(str, self.time))})\n" \
+               f"    {_('periods')}: {self.periods.start}-{self.periods.stop-1}" \
+                                   f"({'-'.join(map(str, self.time))})\n" \
                f"    {_('room')}: {self.room_name}\n" \
                f"    {_('weeks')}: {self.weeks.start}-{self.weeks.stop-1}" \
                                  f"{f'(/{self.weeks.step})' if self.weeks.step != 1 else ''}\n" \
                f"    {_('description')}: {self.description}\n"
+
+    def to_event(self):
+        Event = require("icalendar").Event # pylint: disable=C0103
+        if TYPE_CHECKING: from icalendar import Event # pylint: disable=C0321,C0415
+
+        start_time, end_time = self.time
+
+        event = Event()
+        event.add('summary', self.name)
+        event.add('dtstart', self.first_day + start_time)
+        event.add('dtend', self.first_day + end_time)
+        event.add('location', self.room_name)
+        event.add('description', self.description)
+        event.add('rrule', {'freq': 'weekly', 'count': len(self.weeks)})
+
+        return event

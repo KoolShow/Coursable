@@ -23,6 +23,8 @@ time_table = {
 tz = timezone('Asia/Shanghai')
 
 # 开学日期
-startdates = [
-    "2025-02-15",
-]
+startdates = {
+    (2024, 2): "2025-02-17",
+}
+
+PROD_ID = "-//KoolShow//Coursable//"
