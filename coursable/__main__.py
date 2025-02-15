@@ -26,6 +26,13 @@ def main():
         help = "The path to the input file. If not provided, the input will be the default example."
     )
 
+    parser.add_argument(
+        '-c', '--ics',
+        metavar = 'OUTPUT_ICS_FILE',
+        type = str,
+        help = "Set output format to ics, and specify the output file path."
+    )
+
     args = parser.parse_args()
 
     input_file: str | Path = args.input or absolute_path("examples/example.json")
@@ -35,7 +42,10 @@ def main():
     except FileNotFoundError as e:
         parser.error(str(e))
 
-    print(table)
+    if args.ics:
+        table.to_ics(args.ics)
+    else:
+        print(table)
 
 if __name__ == "__main__":
     main()
