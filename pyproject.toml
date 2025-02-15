@@ -33,6 +33,7 @@ mypy = "^1.15.0"
 pylint = "^3.3.4"
 types-requests = "^2.32.0.20241016"
 types-pyyaml = "^6.0.12.20241230"
+types-pytz = "^2025.1.0.20250204"
 
 [tool.poetry.requires-plugins]
 poetry-dynamic-versioning = { version = ">=1.0.0,<2.0.0", extras = ["plugin"] }
