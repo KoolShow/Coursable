@@ -1,10 +1,10 @@
 # Coursable ✅
 
-[![GitHub repo size](https://img.shields.io/github/repo-size/KoolShow/Coursable?style=for-the-badge)](https://github.com/KoolShow/Coursable)
-[![GitHub repo stars](https://img.shields.io/github/stars/KoolShow/Coursable?style=for-the-badge)](https://github.com/KoolShow/Coursable/stargazers)
-[![GitHub action status](https://github.com/KoolShow/Coursable/workflows/CI/badge.svg)](https://github.com/KoolShow/Coursable/actions)
-[![Python](https://img.shields.io/badge/Python-3.13-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://docs.python.org/3/whatsnew/3.13.html)
-[![MIT lisence](https://img.shields.io/badge/Lisence-MIT-green?style=for-the-badge)](https://github.com/KoolShow/Coursable/blob/main/LICENSE)
+![GitHub repo size](https://img.shields.io/github/repo-size/KoolShow/Coursable?style=for-the-badge)
+![GitHub repo stars](https://img.shields.io/github/stars/KoolShow/Coursable?style=for-the-badge)
+![GitHub action status](https://github.com/KoolShow/Coursable/workflows/CI/badge.svg)
+![Python](https://img.shields.io/badge/Python-3.13-FFD43B?style=for-the-badge&logo=python&logoColor=blue)
+![MIT lisence](https://img.shields.io/badge/Lisence-MIT-green?style=for-the-badge)
 
 BJUT课程表解析库, 带有i18n支持
 
@@ -17,7 +17,7 @@ BJUT课程表解析库, 带有i18n支持
 - i18n支持 🌐
 - 支持第三方json解析库加速 ⚡
 - 命令行调用 📝
-- 导出/订阅ics 🗓️ (TODO)
+- 导出ics 🗓️
 - ...
 
 ## Install 📥
@@ -30,7 +30,7 @@ pip install git+github.com/KoolShow/Coursable.git
 pip install coursable[...] # url, orjson, ujson, ics
 ```
 
-### [Poetry 📜](https://python-poetry.org/)
+### Poetry 📜
 
 ```bash
 git clone https://github.com/KoolShow/Coursable.git
@@ -50,7 +50,7 @@ python -m coursable --help
 ```
 
 ```bash
-usage: coursable [-h] [-v] [-i INPUT_FILE]
+usage: coursable [-h] [-v] [-i INPUT_FILE] [-c OUTPUT_ICS_FILE]
 
 BJUT course table converter.
 
@@ -59,6 +59,8 @@ options:
   -v, --version         Show the version of the tool.
   -i, --input INPUT_FILE
                         The path to the input file. If not provided, the input will be the default example.
+  -c, --ics OUTPUT_ICS_FILE
+                        Set output format to ics, and specify the output file path.
 ```
 
 ## Contribute 🛠️
