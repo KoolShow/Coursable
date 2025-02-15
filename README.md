@@ -17,7 +17,7 @@ BJUT课程表解析库, 带有i18n支持
 - i18n支持 🌐
 - 支持第三方json解析库加速 ⚡
 - 命令行调用 📝
-- 导出/订阅ics 🗓️ (TODO)
+- 导出ics 🗓️
 - ...
 
 ## Install 📥
@@ -50,7 +50,7 @@ python -m coursable --help
 ```
 
 ```bash
-usage: coursable [-h] [-v] [-i INPUT_FILE]
+usage: coursable [-h] [-v] [-i INPUT_FILE] [-c OUTPUT_ICS_FILE]
 
 BJUT course table converter.
 
@@ -59,6 +59,8 @@ options:
   -v, --version         Show the version of the tool.
   -i, --input INPUT_FILE
                         The path to the input file. If not provided, the input will be the default example.
+  -c, --ics OUTPUT_ICS_FILE
+                        Set output format to ics, and specify the output file path.
 ```
 
 ## Contribute 🛠️
