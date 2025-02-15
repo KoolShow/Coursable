@@ -1,4 +1,7 @@
 kbList: course_list
+xsxx: student
+
+XQMMC: term
 
 # Course
 cdmc: room_name
@@ -14,4 +17,7 @@ xm: teacher_name
 xqj: weekday
 xqmc: zone
 xsdm: form_code
+xnm: year
+xnmc: year
+xqmmc: term
 zcd: weeks

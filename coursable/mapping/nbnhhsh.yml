@@ -3,7 +3,7 @@
 
 qsxqj: 起始星期几
 xsxx: 学生信息
-sjkList: sjk
+sjkList: 暑假课列表
 sjfwkg: sjfwkg
 xqjmcMap: 星期几名称映射
 xskbsfxstkzt: 学生课表是否显示停课状态
@@ -116,12 +116,14 @@ xf: 学分
 xkbz: 选课标志
 xm: 姓名
 xnm: 学年名
+xnmc: 学年名称
 xqdm: 校区代码
 xqh1: 校区号1
 xqh_id: 校区号id
 xqj: 星期几
 xqjmc: 星期几名称
-xqm: 校区名
+xqm: ?
+xqmmc: 学期名名称
 xqmc: 校区名称
 xsdm: 形式代码
 xslxbj: 形式类型标记
