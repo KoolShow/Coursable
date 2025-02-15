@@ -106,5 +106,6 @@ class Course:
         return f"{self.name}:\n" \
                f"    {_('weekday')}: {self.weekday}\n" \
                f"    {_('periods')}: {self.periods.start}-{self.periods.stop-1}({self.time})\n" \
+               f"    {_('room')}: {self.room_name}\n" \
                f"    {_('weeks')}: {self.weeks.start}-{self.weeks.stop-1}{f'(/{self.weeks.step})' if self.weeks.step != 1 else ''}\n" \
                f"    {_('description')}: {self.description}\n"
