@@ -1,0 +1,12 @@
+# Ignore Python bytecode files
+*.pyc
+*__pycache__/
+venv/
+.env/
+.DS_Store
+Thumbs.db
+*.log
+.coverage
+htmlcov/
+poetry.lock
+dist/
