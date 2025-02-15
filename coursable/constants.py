@@ -1,3 +1,5 @@
+from pytz import timezone
+
 # 上课时间
 time_table = {
     # 上午
@@ -16,3 +18,11 @@ time_table = {
     11: '19:55-20:40',
     12: '20:45-21:30',
 }
+
+# 时区
+tz = timezone('Asia/Shanghai')
+
+# 开学日期
+startdates = [
+    "2025-02-15",
+]

@@ -1,5 +1,7 @@
+from datetime import datetime
 import unittest
 from coursable import Course
+from coursable.constants import tz
 
 class TestCourse(unittest.TestCase):
 
@@ -19,7 +21,7 @@ class TestCourse(unittest.TestCase):
             Course.parse_periods('invalid')
 
     def test_parse_date(self):
-        self.assertEqual(Course.parse_date('2023-02-14'), (2023, 2, 14))
+        self.assertEqual(Course.parse_date('2023-02-14'), datetime(2023, 2, 14, tzinfo=tz))
         with self.assertRaises(ValueError):
             Course.parse_date('invalid')
 
@@ -47,7 +49,7 @@ class TestCourse(unittest.TestCase):
         self.assertEqual(course.weekday, 1)
         self.assertEqual(course.room_name, "Room 101")
         self.assertEqual(course.weeks, range(1, 17))
-        self.assertEqual(course.update_date, (2023, 2, 14))
+        self.assertEqual(course.update_date, datetime(2023, 2, 14, tzinfo=tz))
         self.assertEqual(course.periods, range(1, 5))
         self.assertEqual(course.teacher_name, "Teacher A")
         self.assertEqual(course.class_compose, ["class1", "class2"])

@@ -1,10 +1,11 @@
+from datetime import datetime, timedelta
 import re
 import time
 from typing import Literal
 from dataclasses import dataclass
 
 from .lang import _ # i18n function
-from .constants import time_table
+from .constants import time_table, tz
 
 
 @dataclass
@@ -13,7 +14,7 @@ class Course:
     weekday: Literal[1,2,3,4,5,6,7]
     room_name: str
     weeks: range
-    update_date: tuple[int, int, int]
+    update_date: datetime
     periods: range
     class_name: str
     class_compose: list[str]
@@ -79,14 +80,15 @@ class Course:
         return range(start, end + 1)
 
     @staticmethod
-    def parse_date(date: str) -> tuple[int, int, int]:
+    def parse_date(date: str) -> datetime:
         time_tuple = time.strptime(date, "%Y-%m-%d")
 
-        year = time_tuple.tm_year
-        month = time_tuple.tm_mon
-        day = time_tuple.tm_mday
+        dt = datetime(time_tuple.tm_year,
+                      time_tuple.tm_mon,
+                      time_tuple.tm_mday,
+                      tzinfo=tz)
 
-        return (year, month, day)
+        return dt
 
     @staticmethod
     def parse_class(class_compose: str) -> list[str]:
@@ -94,18 +96,28 @@ class Course:
 
     @property
     def description(self) -> str:
-        return f"[{_(f'form.{self.form_code}.name')}{_(f'form.{self.form_code}.mark')}{self.exam_type}({self.credit})] {self.teacher_name}, {self.course_type}, {self.class_name}({','.join(self.class_compose)}), {self.zone}"
+        return f"[{_(f'form.{self.form_code}.name')}" \
+               f"{_(f'form.{self.form_code}.mark')}" \
+               f"{self.exam_type}({self.credit})]" \
+               f"{self.teacher_name}, " \
+               f"{self.course_type}, " \
+               f"{self.class_name} " \
+               f"({','.join(self.class_compose)}), " \
+               f"{self.zone}"
 
     @property
-    def time(self) -> str:
-        start_time = time_table[self.periods.start].split("-")[0]
-        end_time = time_table[self.periods.stop-1].split("-")[1]
-        return f"{start_time}-{end_time}"
+    def time(self) -> tuple[timedelta, timedelta]:
+        start_time = time_table[self.periods.start].split("-")[0].split(":")
+        end_time = time_table[self.periods.stop-1].split("-")[1].split(":")
+        st = timedelta(hours=int(start_time[0]), minutes=int(start_time[1]))
+        et = timedelta(hours=int(end_time[0]), minutes=int(end_time[1]))
+        return st, et
 
     def __str__(self) -> str:
         return f"{self.name}:\n" \
                f"    {_('weekday')}: {self.weekday}\n" \
-               f"    {_('periods')}: {self.periods.start}-{self.periods.stop-1}({self.time})\n" \
+               f"    {_('periods')}: {self.periods.start}-{self.periods.stop-1}({'-'.join(map(str, self.time))})\n" \
                f"    {_('room')}: {self.room_name}\n" \
-               f"    {_('weeks')}: {self.weeks.start}-{self.weeks.stop-1}{f'(/{self.weeks.step})' if self.weeks.step != 1 else ''}\n" \
+               f"    {_('weeks')}: {self.weeks.start}-{self.weeks.stop-1}" \
+                                 f"{f'(/{self.weeks.step})' if self.weeks.step != 1 else ''}\n" \
                f"    {_('description')}: {self.description}\n"
