@@ -32,6 +32,8 @@ class TestCourse(unittest.TestCase):
         course = Course(
             name="Test Course",
             weekday="1",
+            year="2024",
+            term="2",
             room_name="Room 101",
             weeks="1-16周",
             update_date="2023-02-14",
