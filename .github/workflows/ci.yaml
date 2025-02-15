@@ -25,10 +25,12 @@ jobs:
       run: eval $(poetry env activate)
 
     - name: Run mypy
+      if: ${{ ! contains(env.COMMIT_MESSAGE, '--no-typecheck') }}
       run: poetry run mypy coursable
       continue-on-error: false
 
     - name: Run unit tests with coverage
+      if: ${{ ! contains(env.COMMIT_MESSAGE, '--no-test') }}
       run: |
         poetry run coverage run -m unittest test
         poetry run coverage report
@@ -37,18 +39,22 @@ jobs:
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v4
+      if: ${{ ! contains(env.COMMIT_MESSAGE, '--no-test') }}
       with:
         name: coverage-report
         path: htmlcov/
 
     - name: Run pylint
+      if: ${{ ! contains(env.COMMIT_MESSAGE, '--no-lint') }}
       run: poetry run pylint coursable || true
       continue-on-error: true
 
     - name: Build development package
+      if: ${{ ! contains(env.COMMIT_MESSAGE, '--no-build') }}
       run: poetry build
 
     - name: Upload artifacts
+      if: ${{ ! contains(env.COMMIT_MESSAGE, '--no-build') }}
       uses: actions/upload-artifact@v4
       with:
         name: build-artifacts
